@@ -1,0 +1,35 @@
+{
+  "kind": "collectionType",
+  "collectionName": "plans",
+  "info": {
+    "name": "plan",
+    "description": ""
+  },
+  "options": {
+    "increments": true,
+    "timestamps": true,
+    "draftAndPublish": false
+  },
+  "attributes": {
+    "url": {
+      "type": "string"
+    },
+    "identifier": {
+      "type": "string"
+    },
+    "password": {
+      "type": "string"
+    },
+    "time": {
+      "type": "datetime"
+    },
+    "mailings": {
+      "via": "plans",
+      "collection": "mailing",
+      "dominant": true
+    },
+    "title": {
+      "type": "string"
+    }
+  }
+}

@@ -30,17 +30,17 @@ async function capture(url, dst) {
 }
 ```
 
-<img src="./documets/images/3.png" height="400"/>  
+<img src="./.documents/images/3.png" height="400"/>  
 
 ## # Mailing
 Mailing 은 `nodemailer` 라는 라이브러리를 사용하여 각 사용자에게 mail을 전송한다.
 
 ## # 보안 특이사항
 1. 요청받은 URL은 Identifier / Password로 인증해야 접근 가능하다.  
-   ![image](./documets/images/1.png)  
+   ![image](./.documents/images/1.png)  
 
 2. 인증해서 들어가보면 Request Header에 Authorization Basic Token이 들어있다.  
-   ![image](./documets/images/2.png)  
+   ![image](./.documents/images/2.png)  
 
 3. Basic Token은 Base64로 Encoding 되어있으며 Base64로 Decoding하면 그대로 identifier, password가 노출되는 보안 이슈가 있으며 jwt과 다르게 만료 기한도 없다.   
 
