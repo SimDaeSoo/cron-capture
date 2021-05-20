@@ -3,7 +3,7 @@
   "collectionName": "plans",
   "info": {
     "name": "plan",
-    "description": ""
+    "description": "캡쳐하고자 하는 URL, 수신자, 요일 관리"
   },
   "options": {
     "increments": true,
@@ -30,6 +30,9 @@
     },
     "title": {
       "type": "string"
+    },
+    "days": {
+      "collection": "day"
     }
   }
 }

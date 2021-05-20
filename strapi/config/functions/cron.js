@@ -10,8 +10,13 @@ module.exports = {
 
     for (const plan of plans) {
       const time = (new Date(plan.time)).getTime() + 86400000;
+      const days = plan.days.map(row => Number(row.value));
+      const today = new Date().getDay();
 
-      await execute(plan);
+      if (days.indexOf(today) >= 0) {
+        await execute(plan);
+      }
+
       await strapi.query('plan').update({ id: plan.id }, { time });
     }
   }
@@ -67,7 +72,7 @@ async function capture(url, dst, headers = {}) {
   const dimensions = await page.evaluate(() => {
     return {
       width: document.documentElement.scrollWidth,
-      height: document.documentElement.scrollHeight,
+      height: document.documentElement.scrollHeight + 2000,
       deviceScaleFactor: window.devicePixelRatio,
     };
   });

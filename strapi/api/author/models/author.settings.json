@@ -3,7 +3,7 @@
   "collectionName": "authors",
   "info": {
     "name": "author",
-    "description": ""
+    "description": "이메일 송신자 설정"
   },
   "options": {
     "increments": true,

@@ -1,9 +1,9 @@
 {
   "kind": "collectionType",
-  "collectionName": "mailings",
+  "collectionName": "days",
   "info": {
-    "name": "Mailing",
-    "description": "이메일 수신자 목록"
+    "name": "day",
+    "description": ""
   },
   "options": {
     "increments": true,
@@ -11,15 +11,11 @@
     "draftAndPublish": false
   },
   "attributes": {
-    "email": {
-      "type": "string"
-    },
     "name": {
       "type": "string"
     },
-    "plans": {
-      "via": "mailings",
-      "collection": "plan"
+    "value": {
+      "type": "integer"
     }
   }
 }
