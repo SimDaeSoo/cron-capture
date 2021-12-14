@@ -32,7 +32,7 @@ module.exports = {
 
 async function execute(plan) {
   const { url, identifier, password, mailings } = plan;
-  const temp = `../../tmp/screenshot/${Date.now()}.png`;
+  const temp = `../../tmp/screenshot/${Date.now()}.jpeg`;
   const headers = { 'Accept-Language': 'ko' };
 
   if (!fs.existsSync(`../../tmp/screenshot`)) fs.mkdirSync(`../../tmp/screenshot`, { recursive: true });
@@ -51,11 +51,11 @@ async function execute(plan) {
       from: `"${author.name}" <${author.email}>`,
       to: mailing.email,
       subject: plan.title,
-      html: '<img src="cid:captured.png"/>',
+      html: '<img src="cid:captured.jpeg"/>',
       attachments: [{
-        filename: 'image.png',
+        filename: 'image.jpeg',
         path: temp,
-        cid: 'captured.png'
+        cid: 'captured.jpeg'
       }]
     });
   }
@@ -76,16 +76,29 @@ async function capture(url, dst, headers = {}) {
   });
   await page.evaluateHandle('document.fonts.ready');
 
+  await new Promise((resolve) => {
+    setTimeout(() => {
+      resolve();
+    }, 1000);
+  });
+
   const dimensions = await page.evaluate(() => {
     return {
       width: document.documentElement.scrollWidth,
       height: document.documentElement.scrollHeight + 2000,
       deviceScaleFactor: window.devicePixelRatio,
+      waitUntil: 'networkidle2',
     };
   });
 
+  await new Promise((resolve) => {
+    setTimeout(() => {
+      resolve();
+    }, 1000);
+  });
+
   await page.setViewport(dimensions);
-  await page.screenshot({ path: dst });
+  await page.screenshot({ path: dst, quality: 60, type: 'jpeg' });
   await browser.close();
 }
 

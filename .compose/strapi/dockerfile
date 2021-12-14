@@ -1,4 +1,4 @@
-FROM node:lts
+FROM node:14.18
 
 RUN  apt-get update \
   && apt-get install -y wget gnupg ca-certificates procps libxss1 \
@@ -15,7 +15,7 @@ RUN wget http://cdn.naver.com/naver/NanumFont/fontfiles/NanumFont_TTF_ALL.zip
 RUN unzip NanumFont_TTF_ALL.zip -d /usr/share/fonts/nanumfont
 RUN fc-cache -f -v
 ENV LANG=ko_KR.UTF-8 \
-    LANGUAGE=ko_KR.UTF-8
+  LANGUAGE=ko_KR.UTF-8
 
 
 WORKDIR /home/service/strapi
