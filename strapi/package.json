@@ -15,7 +15,7 @@
     "knex": "0.21.18",
     "mysql": "2.18.1",
     "nodemailer": "^6.6.0",
-    "puppeteer": "^9.1.1",
+    "puppeteer": "^13.0.0",
     "strapi": "3.6.2",
     "strapi-admin": "3.6.2",
     "strapi-connector-bookshelf": "3.6.2",
