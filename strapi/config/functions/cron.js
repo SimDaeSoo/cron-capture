@@ -13,11 +13,18 @@ module.exports = {
       const days = plan.days.map(row => Number(row.value));
       const today = new Date().getDay();
 
+      await strapi.query('plan').update({ id: plan.id }, { time});
+
       if (days.indexOf(today) >= 0) {
-        await execute(plan);
+	try {
+	  console.log('execute plan', plan.id);
+          await execute(plan);
+	} catch(e) {
+	  console.log(e);
+	}
       }
 
-      await strapi.query('plan').update({ id: plan.id }, { time });
+      //await strapi.query('plan').update({ id: plan.id }, { time });
     }
   }
 };
