@@ -1,30 +1,29 @@
 'use strict';
 const puppeteer = require('puppeteer');
 const nodemailer = require('nodemailer');
-const dayjs = require('dayjs');
 const fs = require('fs');
 
 module.exports = {
   '* * * * *': async () => {
+    console.log('1. get plans');
     const plans = await strapi.query('plan').find({ time_lte: new Date() });
 
+    console.log('2. execute plans');
     for (const plan of plans) {
       const time = (new Date(plan.time)).getTime() + 86400000;
       const days = plan.days.map(row => Number(row.value));
       const today = new Date().getDay();
 
-      await strapi.query('plan').update({ id: plan.id }, { time});
+      await strapi.query('plan').update({ id: plan.id }, { time });
 
       if (days.indexOf(today) >= 0) {
-	try {
-	  console.log('execute plan', plan.id);
+        try {
+          console.log('plan : ', plan.id);
           await execute(plan);
-	} catch(e) {
-	  console.log(e);
-	}
+        } catch (e) {
+          console.log(e);
+        }
       }
-
-      //await strapi.query('plan').update({ id: plan.id }, { time });
     }
   }
 };
@@ -41,11 +40,14 @@ async function execute(plan) {
     headers.Authorization = `Basic ${token}`;
   }
 
+  console.log('capture begin');
   await capture(url, temp, headers);
+  console.log('capture sucess');
 
   const author = await strapi.query('author').findOne();
   const transporter = getTransporter(author.email, author.password);
 
+  console.log('sending mails');
   for (const mailing of mailings) {
     await transporter.sendMail({
       from: `"${author.name}" <${author.email}>`,
