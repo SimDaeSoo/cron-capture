@@ -5,22 +5,17 @@ const fs = require('fs');
 
 module.exports = {
   '* * * * *': async () => {
-    console.log('1. get plans');
     const plans = await strapi.query('plan').find({ time_lte: new Date() });
 
-    console.log('2. execute plans');
     for (const plan of plans) {
-      console.log('3. plan execute', plan.id);
       const time = (new Date(plan.time)).getTime() + 86400000;
       const days = plan.days.map(row => Number(row.value));
       const today = new Date().getDay();
 
-      console.log('4. plan update');
       await strapi.query('plan').update({ id: plan.id }, { time });
 
       if (days.indexOf(today) >= 0) {
         try {
-          console.log('plan : ', plan.id);
           await execute(plan);
         } catch (e) {
           console.log(e);
@@ -42,14 +37,11 @@ async function execute(plan) {
     headers.Authorization = `Basic ${token}`;
   }
 
-  console.log('capture begin');
   await capture(url, temp, headers);
-  console.log('capture sucess');
 
   const author = await strapi.query('author').findOne();
   const transporter = getTransporter(author.email, author.password);
 
-  console.log('sending mails');
   for (const mailing of mailings) {
     await transporter.sendMail({
       from: `"${author.name}" <${author.email}>`,
@@ -73,37 +65,42 @@ async function capture(url, dst, headers = {}) {
 
   page.setExtraHTTPHeaders(headers);
 
-  await page.goto(url);
-  await page.evaluateOnNewDocument(() => {
-    Object.defineProperty(navigator, "language", { get: () => "ko-KR" });
-    Object.defineProperty(navigator, "languages", { get: () => ["ko-KR", "ko"] });
-  });
-  await page.evaluateHandle('document.fonts.ready');
+  try {
+    await page.goto(url);
+    await page.evaluateOnNewDocument(() => {
+      Object.defineProperty(navigator, "language", { get: () => "ko-KR" });
+      Object.defineProperty(navigator, "languages", { get: () => ["ko-KR", "ko"] });
+    });
+    await page.evaluateHandle('document.fonts.ready');
 
-  await new Promise((resolve) => {
-    setTimeout(() => {
-      resolve();
-    }, 1000);
-  });
+    await new Promise((resolve) => {
+      setTimeout(() => {
+        resolve();
+      }, 1000);
+    });
 
-  const dimensions = await page.evaluate(() => {
-    return {
-      width: document.documentElement.scrollWidth,
-      height: document.documentElement.scrollHeight + 2000,
-      deviceScaleFactor: window.devicePixelRatio,
-      waitUntil: 'networkidle2',
-    };
-  });
+    const dimensions = await page.evaluate(() => {
+      return {
+        width: document.documentElement.scrollWidth,
+        height: document.documentElement.scrollHeight + 2000,
+        deviceScaleFactor: window.devicePixelRatio,
+        waitUntil: 'networkidle2',
+      };
+    });
 
-  await new Promise((resolve) => {
-    setTimeout(() => {
-      resolve();
-    }, 1000);
-  });
+    await new Promise((resolve) => {
+      setTimeout(() => {
+        resolve();
+      }, 1000);
+    });
 
-  await page.setViewport(dimensions);
-  await page.screenshot({ path: dst, quality: 60, type: 'jpeg' });
-  await browser.close();
+    await page.setViewport(dimensions);
+    await page.screenshot({ path: dst, quality: 60, type: 'jpeg' });
+    await browser.close();
+  } catch (e) {
+    browser.close();
+    throw e;
+  }
 }
 
 function getTransporter(identifier, password) {
