@@ -10,10 +10,12 @@ module.exports = {
 
     console.log('2. execute plans');
     for (const plan of plans) {
+      console.log('3. plan execute', plan.id);
       const time = (new Date(plan.time)).getTime() + 86400000;
       const days = plan.days.map(row => Number(row.value));
       const today = new Date().getDay();
 
+      console.log('4. plan update');
       await strapi.query('plan').update({ id: plan.id }, { time });
 
       if (days.indexOf(today) >= 0) {
@@ -106,10 +108,8 @@ async function capture(url, dst, headers = {}) {
 
 function getTransporter(identifier, password) {
   const transporter = nodemailer.createTransport({
-    service: 'gmail',
-    host: 'smtp.gmail.com',
-    port: 587,
-    secure: false,
+    service: 'Naver',
+    host: 'smtp.naver.com',
     auth: { user: identifier, pass: password }
   });
 
